@@ -1,0 +1,10 @@
+Backend
+
+conda actívate api_core
+uvicorn app:api_upcore --reload
+
+
+
+Frontend
+
+python -m http.server 8001
