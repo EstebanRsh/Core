@@ -1,0 +1,10 @@
+# Fuerza texto con LF en el repo (también en Windows)
+* text eol=lf
+
+# Binarios (sin conversión de EOL)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
