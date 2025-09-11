@@ -152,13 +152,23 @@ export const Layout = {
       document.documentElement.classList.toggle("sidebar-open");
     });
     $("#lnk-theme")?.addEventListener("click", (e) => {
-      e.preventDefault();
-      const v = document.documentElement.getAttribute("data-theme");
-      document.documentElement.setAttribute(
-        "data-theme",
-        v === "dark" ? "light" : "dark"
-      );
+      e.preventDefault(); // evita que cambie el hash
+      // 1) Lee el tema actual (por defecto 'dark' si no hay atributo)
+      const curr =
+        document.documentElement.getAttribute("data-theme") || "dark";
+      // 2) Alterna entre 'dark' y 'light'
+      const next = curr === "dark" ? "light" : "dark";
+      // 3) Escribe el atributo para que el CSS se aplique
+      document.documentElement.setAttribute("data-theme", next);
+      // 4) Persiste la preferencia
+      localStorage.setItem("THEME", next);
+      const icon = document.querySelector("#lnk-theme i");
+      if (icon) {
+        icon.setAttribute("data-lucide", next === "dark" ? "moon" : "sun");
+        createIcons({ icons });
+      }
     });
+
     $("#lnk-logout")?.addEventListener("click", (e) => {
       e.preventDefault();
       localStorage.clear();

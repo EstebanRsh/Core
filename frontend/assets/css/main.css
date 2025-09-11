@@ -10,11 +10,23 @@
 * {
   box-sizing: border-box;
 }
-/* (2) Fondo y color base (puedes cambiarlos luego) */
+
 body {
   margin: 0;
-  background: #eee;
-  color: #0b0b0b;
+  padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Tema oscuro */
+html[data-theme="dark"] body {
+  background: #0b0b0b;
+  color: #eee;
+}
+
+/* Tema claro*/
+html[data-theme="light"] body {
+  background: #f7f7f7; /* el que prefieras para el body en modo claro */
+  color: #222;
 }
 
 /* (3) Grid del shell: header arriba, sidebar a la izq, main a la derecha */
