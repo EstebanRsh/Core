@@ -7,17 +7,12 @@ import { ROUTES } from '../config.js';
 export const DashboardController = {
   render(root) {
     const { token, user, profile } = AuthModel.getSession();
-    if (!token || !user) {
-      location.hash = ROUTES.LOGIN;
-      return;
-    }
+    if (!token || !user) { location.hash = ROUTES.LOGIN; return; }
     const role = (profile?.role) || user.role;
-    if (role === 'gerente') {
-      mount(root, GerenteView({ user, profile }));
-    } else if (role === 'operador') {
-      mount(root, OperadorView({ user, profile }));
-    } else {
-      mount(root, ClienteView({ user, profile }));
-    }
+    const parts = (location.hash || '').split('/');
+    const section = parts.length > 2 ? parts.slice(2).join('/') : '';
+    if (role === 'gerente') mount(root, GerenteView({ user, profile, section }));
+    else if (role === 'operador') mount(root, OperadorView({ user, profile, section }));
+    else mount(root, ClienteView({ user, profile, section }));
   }
 };

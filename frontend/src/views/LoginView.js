@@ -24,7 +24,7 @@ export function LoginView() {
         </div>
         <p id="login-error" role="alert" style="color:#b00020;display:none"></p>
       </form>
-      <p class="tag">Tip: basta con completar <em>uno</em> entre Email o Documento.</p>
+      <p class="badge">Tip: basta con completar <em>uno</em> entre Email o Documento.</p>
     </section>
   `;
 }

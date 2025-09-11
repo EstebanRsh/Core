@@ -1,14 +1,173 @@
-:root { --gap: 12px; --max: 1100px; font-family: system-ui, sans-serif; }
-body { margin: 0; background: #f7f7f7; color: #222; }
-.app-header, .app-footer { background: #fff; border-bottom: 1px solid #eee; padding: var(--gap); }
-.app-footer { border-top: 1px solid #eee; border-bottom: none; text-align: center; }
-.app-root { max-width: var(--max); margin: 0 auto; padding: 24px var(--gap); min-height: calc(100dvh - 110px); }
-.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-.row { display: grid; gap: var(--gap); }
-.row.cols-2 { grid-template-columns: 1fr 1fr; }
-input, select, button, textarea { font: inherit; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; }
-button { cursor: pointer; }
-.btn { background: #222; color: #fff; border: none; }
-.btn:disabled { opacity: .5; cursor: default; }
-.nav { display:flex; gap:8px; align-items:center; }
-.tag { font-size:.85rem; padding:2px 8px; border:1px solid #ddd; border-radius:999px; background:#fafafa;}
+:root {
+  --gap: 12px;
+  --max: 1200px;
+  --hdr: 56px;
+  --sbw: 260px;
+  --sbw-collapsed: 72px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+/* (1) Reset mínimo */
+* {
+  box-sizing: border-box;
+}
+/* (2) Fondo y color base (puedes cambiarlos luego) */
+body {
+  margin: 0;
+  background: #eee;
+  color: #0b0b0b;
+}
+
+/* (3) Grid del shell: header arriba, sidebar a la izq, main a la derecha */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sbw) 1fr;
+  grid-template-rows: var(--hdr) 1fr;
+  grid-template-areas: "header header" "sidebar main";
+  min-height: 100dvh;
+}
+/* (4) Navbar superior */
+.app-header {
+  grid-area: header;
+  background: #1694d6;
+  color: #fff;
+  padding: 0 var(--gap);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* (5) Sidebar lateral */
+.app-sidebar {
+  grid-area: sidebar;
+  background: #0e1a2b;
+  border-right: 1px solid #0e1a2b;
+  overflow: auto;
+  padding: 10px 8px;
+  position: sticky;
+  top: var(--hdr);
+  height: calc(100dvh - var(--hdr));
+}
+/* (6) Contenido principal */
+.app-root {
+  grid-area: main;
+  max-width: var(--max);
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px var(--gap);
+}
+/* (7) Footer */
+.app-footer {
+  background: #0e1a2b;
+  color: #9fb3d9;
+  border-top: 1px solid #0e1a2b;
+  text-align: center;
+  padding: var(--gap);
+}
+
+/* (8) Tipografía y helpers del navbar */
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  color: inherit;
+}
+.nav-spacer {
+  flex: 1;
+}
+/* (9) Badges informativos */
+.badge {
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* (10) ENLACES de ícono (no botones). Son <a> con aspecto de botón de ícono */
+.icon-link {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+.icon-link:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* (11) NITIDEZ: no escales SVG por CSS; sólo asegura alineación */
+.icon-link svg,
+.side-link svg {
+  display: block;
+}
+
+/* (12) Lista del sidebar */
+.side-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+/* (13) Enlace del sidebar */
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #c9d1ff;
+  font-weight: 600;
+}
+.side-link:hover {
+  background: #111a33;
+}
+.side-link.active {
+  background: #1a2a57;
+  color: #fff;
+}
+.side-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* (14) Sidebar colapsado: sólo íconos visibles (por defecto lo activamos en app.js) */
+.sidebar-collapsed .app-shell {
+  grid-template-columns: var(--sbw-collapsed) 1fr;
+}
+.sidebar-collapsed .side-label {
+  display: none;
+}
+.sidebar-collapsed .app-sidebar {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* (15) Modo mobile: el sidebar se convierte en drawer */
+@media (max-width: 920px) {
+  .app-shell {
+    grid-template-columns: 0 1fr;
+  }
+  .app-sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--hdr);
+    width: var(--sbw);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    height: calc(100dvh - var(--hdr));
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+  .sidebar-open .app-shell {
+    grid-template-columns: 0 1fr;
+  }
+  .sidebar-open .app-sidebar {
+    transform: translateX(0);
+  }
+}

@@ -6,9 +6,7 @@ export const PagoModel = {
   async efectivo({ cliente_id, monto, periodo_year, periodo_month, es_adelantado=false, concepto, descripcion }) {
     return apiFetch('/pagos/efectivo', { method: 'POST', body: { cliente_id, monto, periodo_year, periodo_month, es_adelantado, concepto, descripcion }});
   },
-  async transferenciaForm(formData) {
-    return apiFetch('/pagos/transferencia', { method: 'POST', body: formData, isForm: true });
-  },
+  async transferenciaForm(formData) { return apiFetch('/pagos/transferencia', { method: 'POST', body: formData, isForm: true }); },
   async confirmar(id) { return apiFetch(`/pagos/${id}/confirmar`, { method: 'PUT' }); },
   async detalle(id) { return apiFetch(`/pagos/${id}`, { method: 'GET' }); },
   async anular(id, motivo) { return apiFetch(`/pagos/${id}`, { method: 'DELETE', body: { motivo } }); },

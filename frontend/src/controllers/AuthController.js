@@ -14,11 +14,7 @@ export const AuthController = {
       const email = (fd.get('email') || '').trim();
       const documento = (fd.get('documento') || '').toString().replace(/\D+/g,'');
       const password = (fd.get('password') || '').trim();
-      if (!password || (!email && !documento)) {
-        $error.textContent = 'Completá contraseña y (email o documento).';
-        $error.style.display = '';
-        return;
-      }
+      if (!password || (!email && !documento)) { $error.textContent = 'Completá contraseña y (email o documento).'; $error.style.display = ''; return; }
       try {
         await AuthModel.login({ email: email || undefined, documento: documento || undefined, password });
         await AuthModel.me();
