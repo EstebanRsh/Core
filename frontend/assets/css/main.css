@@ -6,7 +6,6 @@
   --sbw-collapsed: 72px;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
-/* (1) Reset mínimo */
 * {
   box-sizing: border-box;
 }
@@ -25,7 +24,7 @@ html[data-theme="dark"] body {
 
 /* Tema claro*/
 html[data-theme="light"] body {
-  background: #f7f7f7; /* el que prefieras para el body en modo claro */
+  background: #f7f7f7;
   color: #222;
 }
 
@@ -160,26 +159,18 @@ html[data-theme="light"] body {
   padding-right: 6px;
 }
 
-/* (15) Modo mobile: el sidebar se convierte en drawer */
+/* Modo mobile: el sidebar se convierte en drawer */
 @media (max-width: 920px) {
-  .app-shell {
-    grid-template-columns: 0 1fr;
-  }
-  .app-sidebar {
-    position: fixed;
-    left: 0;
-    top: var(--hdr);
-    width: var(--sbw);
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    height: calc(100dvh - var(--hdr));
-    z-index: 10;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  }
-  .sidebar-open .app-shell {
-    grid-template-columns: 0 1fr;
-  }
-  .sidebar-open .app-sidebar {
-    transform: translateX(0);
-  }
+  .app-shell   { grid-template-columns: var(--sbw-collapsed) 1fr; }
+  .app-sidebar { position: sticky; top: var(--hdr); height: calc(100dvh - var(--hdr)); transform:none; box-shadow:none; }
 }
+
+
+/* Popover del menú lateral */
+.popover-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+

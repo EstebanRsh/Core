@@ -1,194 +1,134 @@
 // src/layout/Layout.js
-// (1) Helpers de DOM
-import { $, html } from "../utils/dom.js";
-// (2) Constantes globales
-import { APP_NAME, ROUTES, STORAGE_KEYS } from "../config.js";
-// (3) Lucide ESM: importamos la función y el set de íconos
-import {
-  createIcons,
-  icons,
-} from "https://cdn.jsdelivr.net/npm/lucide@latest/+esm";
+// Layout general: navbar + sidebar con submenús por HoverMenu.
 
-// (4) Genera el menú del sidebar según el rol
+import { $, html } from '../utils/dom.js';
+import { APP_NAME, ROUTES, STORAGE_KEYS } from '../config.js';
+import { createIcons, icons } from 'https://cdn.jsdelivr.net/npm/lucide@latest/+esm';
+import { HoverMenu } from '../components/HoverMenu.js';
+
+/* ---------- Menú por rol ---------- */
 function menu(role) {
-  const common = [{ href: ROUTES.DASHBOARD, icon: "home", label: "Inicio" }];
-  if (role === "gerente") {
+  const common = [{ id:'home', href: ROUTES.DASHBOARD, icon:'home', label:'Inicio' }];
+
+  if (role === 'gerente') {
     return [
       ...common,
-      { href: "#/dashboard/pagos", icon: "credit-card", label: "Pagos" },
-      { href: "#/dashboard/clientes", icon: "users", label: "Clientes" },
-      { href: "#/dashboard/reportes", icon: "bar-chart-3", label: "Reportes" },
-      { href: "#/dashboard/ajustes", icon: "settings", label: "Ajustes" },
+      { id:'clientes', icon:'users', label:'Clientes', children: [
+        { label:'Nuevo cliente',  href:'#/dashboard/clientes/nuevo' },
+        { label:'Lista de clientes', href:'#/dashboard/clientes' },
+      ]},
+      { id:'pagos', icon:'credit-card', label:'Pagos', children: [
+        { label:'Nuevo pago',  href:'#/dashboard/pagos/nuevo' },
+        { label:'Lista de pagos', href:'#/dashboard/pagos' },
+      ]},
+      { id:'reportes', href:'#/dashboard/reportes', icon:'bar-chart-3', label:'Reportes' },
+      { id:'ajustes',  href:'#/dashboard/ajustes',  icon:'settings',    label:'Ajustes' },
     ];
   }
-  if (role === "operador") {
+
+  if (role === 'operador') {
     return [
       ...common,
-      { href: "#/dashboard/pagos", icon: "credit-card", label: "Pagos" },
-      {
-        href: "#/dashboard/cargar-pago",
-        icon: "plus-circle",
-        label: "Cargar pago",
-      },
-      { href: "#/dashboard/pendientes", icon: "clock", label: "Pendientes" },
+      { id:'pagos', icon:'credit-card', label:'Pagos', children: [
+        { label:'Nuevo pago',  href:'#/dashboard/pagos/nuevo' },
+        { label:'Lista de pagos', href:'#/dashboard/pagos' },
+      ]},
+      { id:'pendientes', href:'#/dashboard/pendientes', icon:'clock', label:'Pendientes' },
     ];
   }
+
+  // cliente
   return [
     ...common,
-    { href: "#/dashboard/mis-pagos", icon: "receipt", label: "Mis pagos" },
-    { href: "#/dashboard/mis-datos", icon: "user", label: "Mis datos" },
+    { id:'mis-pagos', href:'#/dashboard/mis-pagos', icon:'receipt', label:'Mis pagos' },
+    { id:'mis-datos', href:'#/dashboard/mis-datos', icon:'user',    label:'Mis datos' },
   ];
 }
 
-// (5) Dibuja el navbar superior. Todo es <a>, no <button>.
+/* ---------- Navbar (sin hamburguesa) ---------- */
 function navbar(role, user) {
   return html`
-    <a
-      id="lnk-toggle-sidebar"
-      href="#toggle"
-      class="icon-link"
-      aria-label="Alternar sidebar"
-      role="button"
-      title="Menú"
-    >
-      <i data-lucide="menu" data-lucide-size="22" data-lucide-stroke="2.25"></i>
-    </a>
     <a href="${ROUTES.DASHBOARD}" class="navbar-brand">${APP_NAME}</a>
     <span class="nav-spacer"></span>
-    ${role ? `<span class="badge">Rol: ${role}</span>` : ""}
-    <a
-      id="lnk-settings"
-      href="#/dashboard/ajustes"
-      class="icon-link"
-      aria-label="Ajustes"
-      title="Ajustes"
-    >
-      <i
-        data-lucide="settings"
-        data-lucide-size="22"
-        data-lucide-stroke="2.25"
-      ></i>
-    </a>
-    <a
-      id="lnk-theme"
-      href="#theme"
-      class="icon-link"
-      aria-label="Tema"
-      title="Cambiar tema"
-      role="button"
-    >
+    ${role ? `<span class="badge">Rol: ${role}</span>` : ''}
+    <a id="lnk-theme" href="#theme" class="icon-link" aria-label="Tema" title="Cambiar tema" role="button">
       <i data-lucide="moon" data-lucide-size="22" data-lucide-stroke="2.25"></i>
     </a>
-    ${user
-      ? html` <a
-          id="lnk-logout"
-          href="#logout"
-          class="icon-link"
-          aria-label="Salir"
-          title="Salir"
-          role="button"
-        >
-          <i
-            data-lucide="log-out"
-            data-lucide-size="22"
-            data-lucide-stroke="2.25"
-          ></i>
-        </a>`
-      : ""}
+    ${user ? html`
+      <a id="lnk-logout" href="#logout" class="icon-link" aria-label="Salir" title="Salir" role="button">
+        <i data-lucide="log-out" data-lucide-size="22" data-lucide-stroke="2.25"></i>
+      </a>` : ''}
   `;
 }
 
-// (6) Dibuja el sidebar lateral (enlaces a secciones del dashboard)
+/* ---------- Sidebar (icon-only). Si hay children => data-menu ---------- */
 function sidebar(role, current) {
   const items = menu(role);
-  const links = items
-    .map(
-      (i) => html`
-        <li>
-          <a
-            class="side-link ${i.href === current ? "active" : ""}"
-            href="${i.href}"
-            title="${i.label}"
-          >
-            <i
-              data-lucide="${i.icon}"
-              data-lucide-size="22"
-              data-lucide-stroke="2.25"
-              aria-hidden="true"
-            ></i>
-            <span class="side-label">${i.label}</span>
-          </a>
-        </li>
-      `
-    )
-    .join("");
-  return html`<ul class="side-menu">
-    ${links}
-  </ul>`;
+  const links = items.map(i => {
+    const hasChildren = Array.isArray(i.children);
+    const href = i.href || '#';
+    const attrs = hasChildren ? `data-menu="${i.id}" aria-haspopup="true" aria-expanded="false"` : '';
+    return html`
+      <li>
+        <a class="side-link ${href===current ? 'active' : ''}" href="${href}" ${attrs} title="${i.label}" data-label="${i.label}">
+          <i data-lucide="${i.icon}" data-lucide-size="22" data-lucide-stroke="2.25" aria-hidden="true"></i>
+          <span class="side-label">${i.label}</span>
+        </a>
+      </li>
+    `;
+  }).join('');
+  return html`<ul class="side-menu">${links}</ul>`;
 }
 
-// (7) API del layout para el router
+/* ---------- API del layout ---------- */
 export const Layout = {
   draw() {
-    const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || "null"); // sesión
-    const profile = JSON.parse(
-      localStorage.getItem(STORAGE_KEYS.PROFILE) || "null"
-    ); // perfil
-    const role = profile?.role || user?.role || ""; // rol efectivo
+    const user    = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER)    || 'null');
+    const profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROFILE) || 'null');
+    const role = (profile?.role) || user?.role || '';
 
-    // Inyecta navbar y sidebar
-    const header = $("#app-header");
-    const aside = $("#app-sidebar");
+    // Pintar navbar + sidebar
+    const header = $('#app-header');
+    const aside  = $('#app-sidebar');
     if (header) header.innerHTML = navbar(role, user);
-    if (aside) aside.innerHTML = sidebar(role, location.hash);
+    if (aside)  aside.innerHTML  = sidebar(role, location.hash);
 
-    // Hidrata íconos Lucide (convierte <i data-lucide="..."> a SVG)
+    // Íconos Lucide (usa el set completo para nítidez)
     createIcons({ icons });
 
-    // Enlaces de acción (no navegación real) -> preventDefault()
-    $("#lnk-toggle-sidebar")?.addEventListener("click", (e) => {
+    // Tema (solo body) + persistencia
+    $('#lnk-theme')?.addEventListener('click', (e) => {
       e.preventDefault();
-      document.documentElement.classList.toggle("sidebar-collapsed");
-      document.documentElement.classList.toggle("sidebar-open");
-    });
-    $("#lnk-theme")?.addEventListener("click", (e) => {
-      e.preventDefault(); // evita que cambie el hash
-      // 1) Lee el tema actual (por defecto 'dark' si no hay atributo)
-      const curr =
-        document.documentElement.getAttribute("data-theme") || "dark";
-      // 2) Alterna entre 'dark' y 'light'
-      const next = curr === "dark" ? "light" : "dark";
-      // 3) Escribe el atributo para que el CSS se aplique
-      document.documentElement.setAttribute("data-theme", next);
-      // 4) Persiste la preferencia
-      localStorage.setItem("THEME", next);
-      const icon = document.querySelector("#lnk-theme i");
-      if (icon) {
-        icon.setAttribute("data-lucide", next === "dark" ? "moon" : "sun");
-        createIcons({ icons });
-      }
+      const curr = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = curr === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('THEME', next);
+      const icon = document.querySelector('#lnk-theme i');
+      if (icon) { icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun'); createIcons({ icons }); }
     });
 
-    $("#lnk-logout")?.addEventListener("click", (e) => {
+    // Logout
+    $('#lnk-logout')?.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.clear();
       location.hash = ROUTES.LOGIN;
     });
 
-    // Cierra el drawer móvil al elegir una opción
-    aside?.addEventListener("click", (e) => {
-      const a = e.target.closest("a");
-      if (a) document.documentElement.classList.remove("sidebar-open");
+    // Vincular HoverMenu a ítems con submenú
+    aside?.querySelectorAll('a.side-link[data-menu]').forEach(a => {
+      const id = a.getAttribute('data-menu');
+      HoverMenu.bind(a, {
+        title: a.getAttribute('data-label') || '',
+        getItems: () => (menu(role).find(it => it.id === id)?.children) || []
+      });
     });
   },
 
-  // Marca activo el link que coincide con el hash actual
   highlightActive() {
     const current = location.hash;
-    document.querySelectorAll(".side-link").forEach((a) => {
-      a.classList.toggle("active", a.getAttribute("href") === current);
+    document.querySelectorAll('.side-link').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === current);
     });
-    // Rehidrata por si hubo cambios de DOM
     createIcons({ icons });
-  },
+  }
 };
