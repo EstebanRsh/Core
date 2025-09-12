@@ -161,10 +161,17 @@ html[data-theme="light"] body {
 
 /* Modo mobile: el sidebar se convierte en drawer */
 @media (max-width: 920px) {
-  .app-shell   { grid-template-columns: var(--sbw-collapsed) 1fr; }
-  .app-sidebar { position: sticky; top: var(--hdr); height: calc(100dvh - var(--hdr)); transform:none; box-shadow:none; }
+  .app-shell {
+    grid-template-columns: var(--sbw-collapsed) 1fr;
+  }
+  .app-sidebar {
+    position: sticky;
+    top: var(--hdr);
+    height: calc(100dvh - var(--hdr));
+    transform: none;
+    box-shadow: none;
+  }
 }
-
 
 /* Popover del menú lateral */
 .popover-menu {
@@ -173,4 +180,3 @@ html[data-theme="light"] body {
   z-index: 9999;
   pointer-events: none;
 }
-

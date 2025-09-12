@@ -1,0 +1,84 @@
+/* assets/css/auth.css
+   Estilos exclusivos para la vista de Login (modo .auth)
+   Mantener este archivo después de main.css para que tenga prioridad.
+*/
+
+/* Oculta sidebar (y opcionalmente footer) en login, y ajusta el grid */
+.auth .app-shell { grid-template-columns: 1fr; grid-template-areas: "header" "main"; }
+.auth .app-sidebar { display: none !important; }
+.auth .app-footer { display: none; }
+
+/* Contenedor del contenido de auth (hero izquierda + panel de login a la derecha) */
+.auth .auth-wrap { max-width: 1200px; width: 100%; margin: 48px auto; padding: 0 16px; }
+.auth .auth-grid { display: grid; grid-template-columns: 1fr minmax(360px, 500px); gap: 56px; align-items: start; }
+
+/* HERO (columna izquierda) */
+.auth .auth-hero h1 {
+  font-size: clamp(28px, 4.2vw, 44px);
+  line-height: 1.1;
+  margin: 0 0 14px 0;
+  font-weight: 800;
+  color: #1fb6ff; /* tu azul, ajustable */
+}
+.auth .auth-hero p.lead { color: #cfe6ff; max-width: 60ch; }
+.auth .auth-hero b { color: #c5f0ff; }
+.auth .auth-hero ul { margin: 18px 0 0 0; padding-left: 1.2rem; color: #bcd; }
+
+/* PANEL (columna derecha) */
+.auth .auth-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.30);
+  padding: 22px;
+  position: relative;
+}
+/* Borde superior con acento degradado */
+.auth .auth-card::before {
+  content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 4px;
+  border-top-left-radius: 16px; border-top-right-radius: 16px;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8 40%, #22d3ee 100%);
+}
+.auth .auth-title { font-weight: 800; font-size: 1.25rem; margin: 0 0 4px 0; }
+.auth .auth-sub   { margin: 0 0 16px 0; color: #cbd5ff; opacity:.9; }
+
+/* Campos con ícono a la izquierda */
+.auth .field { margin-bottom: 12px; }
+.auth .input-wrap { position: relative; }
+.auth .input-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity:.9; }
+.auth input[type="text"],
+.auth input[type="password"],
+.auth input[type="email"] {
+  width: 100%; padding: 12px 14px 12px 36px;
+  border-radius: 12px; border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.25); color: #fff; outline: none;
+}
+.auth input:focus { border-color: rgba(255,255,255,.34); background: rgba(0,0,0,.3); }
+.auth input::placeholder { color: #9bb3ff; opacity:.7; }
+
+/* Mostrar/ocultar password (botón al extremo derecho) */
+.auth .pwd-wrap button {
+  position:absolute; right:8px; top:50%; transform: translateY(-50%);
+  width:36px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,.25);
+  background: transparent; color: inherit; cursor:pointer;
+}
+
+/* Línea de acciones: remember + forgot */
+.auth .row-actions { display:flex; justify-content:space-between; align-items:center; gap: 12px; margin-top: 8px; }
+.auth .row-actions a { color:#7bd0ff; text-decoration:none; }
+.auth .row-actions a:hover { text-decoration:underline; }
+
+/* Botón principal con degradado */
+.auth .btn-grad {
+  width: 100%; padding: 12px 14px; border-radius: 12px; border: none;
+  background: linear-gradient(90deg, #0596d5, #11a6e7 45%, #39bef8 100%);
+  color:#fff; font-weight:800; cursor:pointer;
+}
+.auth .btn-grad:disabled { opacity:.6; cursor: not-allowed; }
+
+/* Nota de pie */
+.auth .auth-note { margin-top: 12px; text-align:center; color:#99b9ff; opacity:.8; font-size:.9rem; }
+
+@media (max-width: 960px) {
+  .auth .auth-grid { grid-template-columns: 1fr; gap: 28px; }
+}
