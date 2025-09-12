@@ -1,145 +1,192 @@
-/* assets/css/auth.css – estilos exclusivos del login (modo .auth) */
+/* assets/css/auth.css – Login compacto (similar a Up Link)
+   Respeta variables de tema de base.css (oscuro/claro).
+*/
 
-/* Oculta sidebar y ajusta grilla */
+/* Ocultar shell en login */
 .auth .app-shell {
   grid-template-columns: 1fr;
   grid-template-areas: "header" "main";
 }
-.auth .app-sidebar {
+.auth .app-sidebar,
+.auth .app-footer {
   display: none !important;
 }
-.auth .app-footer {
-  display: none;
-}
 
-/* Split hero/panel */
+/* ---- Layout general (más compacto) ---- */
 .auth .auth-wrap {
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   margin: 48px auto;
   padding: 0 16px;
 }
 .auth .auth-grid {
   display: grid;
-  grid-template-columns: 1fr minmax(360px, 500px);
-  gap: 56px;
+  grid-template-columns: minmax(460px, 540px) 460px; /* hero | card */
+  gap: 40px;
   align-items: start;
 }
 
-/* Hero */
+/* ---- Hero ---- */
 .auth .auth-hero h1 {
-  font-size: clamp(28px, 4.2vw, 44px);
-  line-height: 1.1;
-  margin: 0 0 14px 0;
+  font-family: var(--font-head, inherit);
+  font-size: clamp(30px, 2.1vw + 14px, 44px); /* tope ~44px */
+  line-height: 1.07;
+  margin: 0 0 12px 0;
   font-weight: 800;
   color: var(--hero-title);
+  letter-spacing: 0.2px;
 }
 .auth .auth-hero p.lead {
   color: var(--hero-lead);
   max-width: 60ch;
+  font-size: 0.98rem;
 }
 .auth .auth-hero b {
   color: var(--hero-lead);
 }
 .auth .auth-hero ul {
-  margin: 18px 0 0 0;
-  padding-left: 1.2rem;
+  margin: 16px 0 0 0;
+  padding-left: 1.15rem;
   color: var(--c-fg-muted);
+  font-size: 0.95rem;
 }
 
-/* Panel */
+/* ---- Card ---- */
+:root {
+  --control-h: 40px;
+  --control-radius: 10px;
+}
+
 .auth .auth-card {
+  position: relative;
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-  padding: 22px;
-  position: relative;
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+  padding: 20px;
+  overflow: hidden; /* para que el ribete siga el radio */
 }
+
+/* Ribete superior celeste */
 .auth .auth-card::before {
   content: "";
   position: absolute;
-  left: -1px;
-  right: -1px;
-  top: -1px;
-  height: 4px;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   background: linear-gradient(
     90deg,
     var(--accent-1),
     var(--accent-2) 40%,
     var(--accent-3) 100%
   );
-}
-.auth .auth-title {
-  font-weight: 800;
-  font-size: 1.25rem;
-  margin: 0 0 4px 0;
-}
-.auth .auth-sub {
-  margin: 0 0 16px 0;
-  color: var(--c-fg-muted);
-  opacity: 0.9;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
 }
 
-/* Inputs con icono */
+.auth .auth-title {
+  font-family: var(--font-head, inherit);
+  font-weight: 800;
+  font-size: 1.18rem; /* ~19px */
+  margin: 2px 0 2px;
+}
+.auth .auth-sub {
+  margin: 0 0 14px 0;
+  color: var(--c-fg-muted);
+  font-size: 0.92rem;
+}
+
+/* ---- Controles (grid: icono | input | addon) ---- */
 .auth .field {
   margin-bottom: 12px;
 }
+.auth label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .auth .input-wrap {
-  position: relative;
-}
-.auth .input-wrap i {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.9;
-  color: currentColor; /* hereda color de texto */
-}
-.auth input[type="text"],
-.auth input[type="password"],
-.auth input[type="email"] {
-  width: 100%;
-  padding: 12px 14px 12px 36px;
-  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 8px;
   border: 1px solid var(--input-border);
   background: var(--input-bg);
-  color: var(--c-fg);
-  outline: none;
+  border-radius: var(--control-radius);
+  height: var(--control-h);
+  padding: 0 8px 0 4px;
 }
-.auth input:focus {
-  border-color: color-mix(in oklab, var(--input-border), var(--c-fg) 40%);
-  background: var(--panel-bg);
+
+/* icono */
+.auth .input-wrap > i {
+  display: grid;
+  place-items: center;
+}
+
+/* input “plano” */
+.auth .input-wrap > input {
+  width: 100%;
+  height: calc(var(--control-h) - 2px);
+  border: 0;
+  background: transparent;
+  color: var(--c-fg);
+  padding: 0 6px;
+  outline: none;
+  font-size: 0.95rem;
 }
 .auth input::placeholder {
   color: var(--input-placeholder);
   opacity: 0.85;
 }
-
-/* Toggle password */
-.auth .pwd-wrap button {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--input-border);
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
+.auth .input-wrap:focus-within {
+  border-color: color-mix(in oklab, var(--input-border), var(--c-fg) 40%);
 }
 
-/* Acciones */
+/* Botones dentro del input (DNI/Email y “ojo”) */
+.auth .input-addon {
+  height: 28px;
+  min-width: 56px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: color-mix(in oklab, var(--panel-bg), var(--c-fg) 4%);
+  color: var(--c-fg);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.auth .input-addon:hover {
+  background: color-mix(in oklab, var(--panel-bg), var(--c-fg) 8%);
+}
+#id-switch[data-mode="email"] {
+  background: color-mix(in oklab, var(--panel-bg), var(--accent-2) 16%);
+  border-color: color-mix(in oklab, var(--input-border), var(--accent-2) 34%);
+}
+
+/* Autofill Chrome */
+.auth input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--c-fg) !important;
+  caret-color: var(--c-fg);
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* ---- Acciones y CTA ---- */
 .auth .row-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 6px;
+  font-size: 0.9rem;
 }
 .auth .row-actions a {
   color: var(--link);
@@ -148,10 +195,11 @@
 .auth .row-actions a:hover {
   text-decoration: underline;
 }
+
 .auth .btn-grad {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
+  height: 40px;
+  border-radius: 10px;
   border: none;
   background: linear-gradient(
     90deg,
@@ -162,22 +210,28 @@
   color: #fff;
   font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 .auth .btn-grad:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 .auth .auth-note {
   margin-top: 12px;
   text-align: center;
   color: var(--c-fg-muted);
-  opacity: 0.8;
-  font-size: 0.9rem;
+  opacity: 0.85;
+  font-size: 0.88rem;
 }
 
-@media (max-width: 960px) {
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .auth .auth-wrap {
+    margin: 40px auto;
+  }
   .auth .auth-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 24px;
   }
 }

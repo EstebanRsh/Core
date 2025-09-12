@@ -1,10 +1,11 @@
 // src/controllers/AuthController.js
-// Controller de autenticación: pinta la vista, engancha eventos y llama al modelo.
+// Controla el login y el botón de modo dentro del input (DNI/Email).
 
 import { $, on, mount } from "../utils/dom.js";
 import { AuthModel } from "../models/AuthModel.js";
 import { LoginView } from "../views/LoginView.js";
-import { ROUTES, STORAGE_KEYS } from "../config.js";
+import { ROUTES } from "../config.js";
+import { isEmail, toDocumento } from "../utils/validation.js";
 import {
   createIcons,
   icons,
@@ -12,71 +13,145 @@ import {
 
 export const AuthController = {
   async renderLogin(root) {
-    // 1) Modo login: asegura la clase .auth en <html> para que CSS oculte el sidebar.
+    // Modo login (oculta sidebar por CSS)
     document.documentElement.classList.add("auth");
 
-    // 2) Pinta la vista (markup) en #app y “hidrata” íconos Lucide.
+    // Monta vista e hidrata íconos
     mount(root, LoginView());
     createIcons({ icons });
 
-    // 3) Cache de nodos que vamos a usar.
+    // Refs
     const form = $("#form-login", root);
-    const errorBox = $("#login-error", root);
-    const btnSubmit = $("#btn-login", root);
-    const inputPwd = $("#pwd", root);
-    const btnToggle = $("#btn-toggle-pwd", root);
-    const inputDoc = $("#doc", root);
-    const rememberCB = $("#remember", root);
+    const $error = $("#login-error", root);
+    const $btn = $("#btn-login", root);
+    const $pwd = $("#pwd", root);
+    const $togglePwd = $("#btn-toggle-pwd", root);
 
-    // 4) Recordar documento: si lo guardamos antes, lo auto-cargamos.
-    const lastDoc = localStorage.getItem("last_doc");
-    if (lastDoc && inputDoc) {
-      inputDoc.value = lastDoc;
-      if (rememberCB) rememberCB.checked = true;
+    const $idLabel = $("#id-label", root);
+    const $idIcon = $("#id-icon", root);
+    const $usuario = $("#usuario", root);
+    const $idSwitch = $("#id-switch", root);
+    const $remember = $("#remember", root);
+
+    // Estado del modo: 'documento' | 'email' (inicial según data-mode del botón)
+    let idMode = $idSwitch.getAttribute("data-mode") || "documento";
+
+    // Aplica el modo visual y de validación al campo usuario
+    function applyMode(next) {
+      idMode = next;
+      const isDoc = idMode === "documento";
+
+      // Etiqueta + icono
+      $idLabel.textContent = isDoc ? "Documento" : "Email";
+      $idIcon.setAttribute("data-lucide", isDoc ? "user" : "mail");
+
+      // Atributos del input
+      if (isDoc) {
+        $usuario.type = "text";
+        $usuario.setAttribute("inputmode", "numeric");
+        $usuario.setAttribute("maxlength", "11");
+        $usuario.setAttribute("placeholder", "20000000");
+        // Limpia caracteres no numéricos si venías de email
+        $usuario.value = $usuario.value.replace(/\D+/g, "");
+      } else {
+        $usuario.type = "email";
+        $usuario.removeAttribute("maxlength");
+        $usuario.setAttribute("inputmode", "email");
+        $usuario.setAttribute("placeholder", "tu@correo.com");
+      }
+
+      // Botón (texto/accesibilidad)
+      $idSwitch.textContent = isDoc ? "DNI" : "Email";
+      $idSwitch.setAttribute("data-mode", idMode);
+      $idSwitch.setAttribute(
+        "aria-label",
+        isDoc ? "Cambiar a Email" : "Cambiar a DNI"
+      );
+
+      // Rehidratar iconos tras cambiar data-lucide
+      createIcons({ icons });
     }
 
-    // 5) Mostrar/ocultar contraseña (cambia icono eye/eye-off)
-    on(btnToggle, "click", () => {
-      const isPwd = inputPwd.type === "password";
-      inputPwd.type = isPwd ? "text" : "password";
-      btnToggle
-        .querySelector("i")
-        ?.setAttribute("data-lucide", isPwd ? "eye-off" : "eye");
-      createIcons({ icons }); // rehidrata icono toggled
+    // Toggle del botón de modo
+    on($idSwitch, "click", () => {
+      applyMode(idMode === "documento" ? "email" : "documento");
+      // Heurística opcional: si escribe '@', cambiamos a email automáticamente
     });
 
-    // 6) Submit del login: validación mínima + llamada al modelo.
+    // Mostrar/ocultar password
+    on($togglePwd, "click", () => {
+      const isPwd = $pwd.type === "password";
+      $pwd.type = isPwd ? "text" : "password";
+      $togglePwd
+        .querySelector("i")
+        ?.setAttribute("data-lucide", isPwd ? "eye-off" : "eye");
+      createIcons({ icons });
+    });
+
+    // Autorrelleno documento guardado
+    const lastDoc = localStorage.getItem("last_doc");
+    if (lastDoc) {
+      applyMode("documento");
+      $usuario.value = lastDoc;
+      if ($remember) $remember.checked = true;
+    } else {
+      applyMode(idMode); // inicial
+    }
+
+    // Submit
     on(form, "submit", async (e) => {
       e.preventDefault();
-      errorBox.style.display = "none";
-      btnSubmit.disabled = true;
+      $error.style.display = "none";
+      $btn.disabled = true;
 
-      // Sanitización: DNI solo dígitos; password trim.
-      const fd = new FormData(form);
-      const documento = String(fd.get("documento") || "").replace(/\D+/g, "");
-      const password = String(fd.get("password") || "").trim();
+      const usuario = ($usuario.value || "").trim();
+      const password = ($pwd.value || "").trim();
 
-      if (!documento || !password) {
-        errorBox.textContent = "Completá documento y contraseña.";
-        errorBox.style.display = "";
-        btnSubmit.disabled = false;
+      // Validación por modo
+      let payload = null;
+
+      if (idMode === "email") {
+        if (!isEmail(usuario)) {
+          $error.textContent =
+            "Ingresá un email válido (ej: nombre@dominio.com).";
+          $error.style.display = "";
+          $btn.disabled = false;
+          return;
+        }
+        payload = { email: usuario, password };
+      } else {
+        const doc = toDocumento(usuario);
+        if (!doc) {
+          $error.textContent =
+            "El documento debe tener entre 7 y 11 dígitos (sin puntos).";
+          $error.style.display = "";
+          $btn.disabled = false;
+          return;
+        }
+        payload = { documento: doc, password };
+      }
+
+      if (!password) {
+        $error.textContent = "Ingresá tu contraseña.";
+        $error.style.display = "";
+        $btn.disabled = false;
         return;
       }
 
       try {
-        // Persistimos "recordarme" en localStorage
-        if (rememberCB?.checked) localStorage.setItem("last_doc", documento);
-        else localStorage.removeItem("last_doc");
+        // Recordarme sólo documento (opcional por privacidad)
+        if ($remember?.checked && payload.documento)
+          localStorage.setItem("last_doc", payload.documento);
+        else if ($remember) localStorage.removeItem("last_doc");
 
-        // Llamada al backend (AuthModel encapsula la API)
-        await AuthModel.login({ documento, password });
-        await AuthModel.me(); // trae perfil/rol y lo guarda (tipicamente)
-        location.hash = ROUTES.DASHBOARD; // navegamos al dashboard
+        await AuthModel.login(payload);
+        await AuthModel.me();
+        location.hash = ROUTES.DASHBOARD;
       } catch (err) {
-        errorBox.textContent = err?.message || "Error de autenticación";
-        errorBox.style.display = "";
+        $error.textContent = err?.message || "Error de autenticación";
+        $error.style.display = "";
       } finally {
-        btnSubmit.disabled = false;
+        $btn.disabled = false;
       }
     });
   },
