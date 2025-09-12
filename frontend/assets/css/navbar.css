@@ -1,35 +1,67 @@
-/* assets/css/navbar.css
-   Estilos de componentes dentro del header (marca, badges, enlaces de icono).
-*/
-.navbar-brand {
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  text-decoration: none;
+/* ===== Navbar compacta ===== */
+#app-header {
+  grid-area: header;
+  height: var(--header-h);
+  min-height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--header-pad-x);
+  background: var(--nav-bg, #10a4e8); /* ← si faltara var, usa celeste fijo */
+  color: var(--nav-fg, #ffffff);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12) inset;
+}
+
+/* Marca */
+#app-header .navbar-brand {
+  font-size: var(--nav-font);
+  font-weight: 700;
+  line-height: 1;
   color: inherit;
-}
-.nav-spacer {
-  flex: 1;
-}
-
-.badge {
-  font-size: 0.85rem;
-  padding: 2px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.icon-link {
+/* Separador flexible */
+#app-header .nav-spacer {
+  flex: 1 1 auto;
+}
+
+/* Botones/links de icono (tema, logout, etc.) */
+#app-header .icon-link {
   display: inline-grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: transparent;
+  width: calc(var(--nav-icon) + 10px);
+  height: calc(var(--nav-icon) + 10px);
+  border-radius: 999px;
   color: inherit;
   text-decoration: none;
+  outline: none;
 }
-.icon-link:hover {
-  background: rgba(0, 0, 0, 0.15);
+
+/* Forzamos tamaño de los SVG (Lucide usa width/height inline) */
+#app-header .icon-link svg {
+  width: var(--nav-icon) !important;
+  height: var(--nav-icon) !important;
+}
+
+/* Badges tipo “Rol: gerente” */
+#app-header .badge {
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Hover/focus sutiles */
+#app-header .icon-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+#app-header .icon-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }

@@ -39,6 +39,23 @@
   /* textos específicos de hero */
   --hero-title: var(--accent-2);
   --hero-lead: #cfe6ff;
+
+  /* Tamaño compacto de header/nav */
+  --header-h: 30px; /* ≈ 0.75cm */
+  --header-pad-x: 12px; /* padding horizontal */
+  --nav-icon: 18px; /* tamaño visual de los íconos */
+  --nav-font: 14px; /* tamaño de texto dentro del header */
+  --brand: #10a4e8; /* tu celeste de marca */
+  --nav-bg: var(--brand); /* fondo del header */
+  --nav-fg: #ffffff; /* texto/íconos en header */
+}
+:root[data-theme="light"] {
+  --nav-bg: var(--brand);
+  --nav-fg: #ffffff;
+}
+:root[data-theme="dark"] {
+  --nav-bg: var(--brand);
+  --nav-fg: #ffffff;
 }
 
 /* Aplicación del tema a nivel body */
