@@ -1,0 +1,15 @@
+/* assets/css/dashboard.css
+   Estilos generales para vistas del panel (tarjetas, grids de widgets).
+   Mantenerlo ligero; estilos específicos de módulos van en sus carpetas.
+*/
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+}
+.dashboard-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}

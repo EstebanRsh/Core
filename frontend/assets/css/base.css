@@ -1,0 +1,81 @@
+/* assets/css/base.css
+   - Tokens (variables CSS)
+   - Reset esencial
+   - Tema (oscuro/claro) aplicado al <body>
+   - Utilidades globales (nitidez de iconos)
+*/
+/* === Tokens de tema (usar SIEMPRE var(...) en los CSS de vistas) === */
+:root {
+  /* base layout (ya los tenías) */
+  --gap: 12px;
+  --max: 1200px;
+  --hdr: 56px;
+  --sbw: 260px;
+  --sbw-collapsed: 72px;
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* ---- DARK (valores por defecto) ---- */
+  --c-bg: #0b0b0b;
+  --c-fg: #eeeeee;
+  --c-fg-muted: #cbd5ff;
+
+  --panel-bg: rgba(255, 255, 255, 0.04);
+  --panel-border: rgba(255, 255, 255, 0.12);
+
+  --input-bg: rgba(0, 0, 0, 0.25);
+  --input-border: rgba(255, 255, 255, 0.14);
+  --input-placeholder: #9bb3ff;
+
+  --link: #7bd0ff;
+
+  /* acentos/gradiente */
+  --accent-1: #0ea5e9;
+  --accent-2: #38bdf8;
+  --accent-3: #22d3ee;
+
+  /* textos específicos de hero */
+  --hero-title: var(--accent-2);
+  --hero-lead: #cfe6ff;
+}
+
+/* Aplicación del tema a nivel body */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-fg);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---- LIGHT: solo reasignamos variables ---- */
+html[data-theme="light"] {
+  --c-bg: #f7f7f7;
+  --c-fg: #1f2937; /* gris-900 */
+  --c-fg-muted: #334155; /* slate-700 */
+
+  --panel-bg: #ffffff;
+  --panel-border: rgba(0, 0, 0, 0.08);
+
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, 0.12);
+  --input-placeholder: #64748b; /* slate-500 */
+
+  --link: #0ea5e9;
+
+  --hero-title: #0ea5e9; /* un poco más “ink” en claro */
+  --hero-lead: #475569; /* slate-600 */
+}
+
+/* Nitidez de íconos SVG */
+.icon-link svg,
+.side-link svg {
+  display: block;
+}

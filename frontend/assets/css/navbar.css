@@ -1,0 +1,35 @@
+/* assets/css/navbar.css
+   Estilos de componentes dentro del header (marca, badges, enlaces de icono).
+*/
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  color: inherit;
+}
+.nav-spacer {
+  flex: 1;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.icon-link {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+.icon-link:hover {
+  background: rgba(0, 0, 0, 0.15);
+}

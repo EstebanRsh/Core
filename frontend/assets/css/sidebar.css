@@ -1,0 +1,45 @@
+/* assets/css/sidebar.css
+   Estilos de la navegación lateral (lista, enlaces, estados).
+*/
+
+.side-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #c9d1ff;
+  font-weight: 600;
+}
+.side-link:hover {
+  background: #111a33;
+}
+.side-link.active {
+  background: #1a2a57;
+  color: #fff;
+}
+
+/* Texto del link (se oculta en modo colapsado) */
+.side-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-collapsed .side-label {
+  display: none;
+}
+
+/* Afinado visual cuando el item abre un submenu (aria-expanded=true) */
+.side-link[aria-expanded="true"] {
+  background: #1a2a57;
+  color: #fff;
+}

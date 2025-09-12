@@ -1,29 +1,48 @@
-/* assets/css/hoverMenu.css
-   Estilos del HoverMenu (panel flotante que aparece al pasar el ratón por el icono).
-   Lo separamos de main.css para que el componente sea autocontenido.
-*/
-.hm-overlay { /* overlay invisible que nos sirve para capturar clicks afuera */
-  position: fixed; inset: 0; z-index: 9999;
-  pointer-events: none;           /* el overlay no bloquea; solo el panel recibe eventos */
-  display: none;                  /* oculto por defecto */
+/* assets/css/hoverMenu.css – estilos del panel flotante del sidebar */
+.hm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
 }
 .hm-panel {
-  position: absolute; min-width: 260px; max-width: 320px;
-  background: rgba(20,25,45,.96); color:#e8eeff;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.35);
-  padding: 12px; pointer-events: auto;     /* el panel sí recibe eventos */
-  opacity: 0; transform: translateY(8px) scale(.98);
-  transition: opacity .16s ease, transform .2s ease;
+  position: absolute;
+  min-width: 260px;
+  max-width: 320px;
+  background: rgba(20, 25, 45, 0.96);
+  color: #e8eeff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  padding: 12px;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition: opacity 0.16s ease, transform 0.2s ease;
 }
-/* al abrir, activamos data-show="true" para disparar transición */
-.hm-overlay[data-show="true"] .hm-panel { opacity: 1; transform: translateY(0) scale(1); }
-
-.hm-title { margin: 4px 8px 10px; font-weight: 800; opacity:.9; }
-.hm-list  { display: grid; gap: 8px; }
+.hm-overlay[data-show="true"] .hm-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.hm-title {
+  margin: 4px 8px 10px;
+  font-weight: 800;
+  opacity: 0.9;
+}
+.hm-list {
+  display: grid;
+  gap: 8px;
+}
 .hm-list a {
-  display: block; text-decoration: none; color: inherit;
-  padding: 10px 12px; border-radius: 12px;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06);
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.hm-list a:hover { background: rgba(255,255,255,.08); }
+.hm-list a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

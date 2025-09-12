@@ -1,6 +1,6 @@
 Backend
 
-conda actívate api_core
+conda activate api_core
 uvicorn app:api_upcore --reload
 
 
